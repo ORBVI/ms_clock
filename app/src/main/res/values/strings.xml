@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">TimeSync</string>
-    <string name="timer_placeholder">00:00.000000</string>
 </resources>

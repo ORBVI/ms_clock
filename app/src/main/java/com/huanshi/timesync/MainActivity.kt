@@ -3,6 +3,7 @@ package com.huanshi.timesync
 import android.graphics.Color
 import android.os.Bundle
 import android.view.Choreographer
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -15,14 +16,22 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val choreographer = Choreographer.getInstance()
 
-    // nanoTime 和 currentTimeMillis 在同一时刻采样，建立映射关系
     private var baseNanoTime: Long = 0
     private var baseEpochMillis: Long = 0
 
     private val frameCallback = object : Choreographer.FrameCallback {
         override fun doFrame(frameTimeNanos: Long) {
-            // frameTimeNanos 就是这一帧的 VSync 时刻，直接用它计算时间
-            binding.timerText.text = formatTimeFromNano(frameTimeNanos)
+            val elapsedNanos = frameTimeNanos - baseNanoTime
+            val micros = (baseEpochMillis * 1000) + (elapsedNanos / 1000)
+
+            val totalSeconds = (micros / 1_000_000) % 60
+            val totalMinutes = (micros / 60_000_000) % 60
+            val millis = (micros / 1000) % 1000
+
+            binding.timerMain.text = String.format(Locale.US, "%02d:%02d", totalMinutes, totalSeconds)
+            binding.timerMs.text = String.format(Locale.US, ".%03d", millis)
+            binding.progressBar.progress = millis.toInt()
+
             choreographer.postFrameCallback(this)
         }
     }
@@ -40,7 +49,6 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // 校准：在同一时刻采样两个时钟
         baseEpochMillis = System.currentTimeMillis()
         baseNanoTime = System.nanoTime()
     }
@@ -53,20 +61,5 @@ class MainActivity : AppCompatActivity() {
     override fun onPause() {
         choreographer.removeFrameCallback(frameCallback)
         super.onPause()
-    }
-
-    /**
-     * 用 Choreographer 回调的 frameTimeNanos 直接推算挂钟时间
-     * frameTimeNanos 是这一帧的 VSync 时刻（nanoTime 基准），精度到纳秒
-     * 比用 System.nanoTime() 重新采样更准确，因为它就是屏幕实际显示这一帧的时刻
-     */
-    private fun formatTimeFromNano(frameTimeNanos: Long): String {
-        val elapsedNanos = frameTimeNanos - baseNanoTime
-        val micros = (baseEpochMillis * 1000) + (elapsedNanos / 1000)
-        val totalSeconds = (micros / 1_000_000) % 60
-        val totalMinutes = (micros / 60_000_000) % 60
-        val millis = (micros / 1000) % 1000
-        val microsPart = micros % 1000
-        return String.format(Locale.US, "%02d:%02d.%03d%03d", totalMinutes, totalSeconds, millis, microsPart)
     }
 }
