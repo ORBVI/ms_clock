@@ -2,7 +2,4 @@
 <resources>
     <color name="black">#000000</color>
     <color name="time_green">#00FF00</color>
-    <color name="time_green_dim">#6600FF00</color>
-    <color name="overlay_black">#99000000</color>
-    <color name="status_black">#CC000000</color>
 </resources>

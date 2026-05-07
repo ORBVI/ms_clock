@@ -1,15 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">TimeSync</string>
-    <string name="tab_timer">Timer</string>
-    <string name="tab_camera">Camera</string>
-    <string name="tab_sync">Sync Test</string>
-    <string name="timer_placeholder">00:00:00.000</string>
-    <string name="back_camera">BACK</string>
-    <string name="front_camera">FRONT</string>
-    <string name="camera_permission_required">Camera permission is required.</string>
-    <string name="camera_start_failed">Camera start failed: %1$s</string>
-    <string name="concurrent_camera_unsupported">Concurrent front/back camera is not supported on this device.</string>
-    <string name="sync_fallback">Dual camera unavailable: %1$s</string>
-    <string name="front_camera_unavailable">Front preview unavailable</string>
+    <string name="timer_placeholder">00:00.000000</string>
 </resources>
