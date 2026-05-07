@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.TimeSync" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+        <item name="android:colorAccent">@color/time_green</item>
+        <item name="colorPrimary">@color/time_green</item>
+        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorSurface">@color/black</item>
+        <item name="colorOnSurface">@color/time_green</item>
+        <item name="android:windowBackground">@color/black</item>
+        <item name="android:forceDarkAllowed">false</item>
+    </style>
+
+    <style name="Widget.TimeSync.TimestampOverlay">
+        <item name="android:background">@color/overlay_black</item>
+        <item name="android:fontFamily">monospace</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:paddingHorizontal">12dp</item>
+        <item name="android:paddingVertical">8dp</item>
+        <item name="android:textColor">@color/time_green</item>
+        <item name="android:textSize">42sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Widget.TimeSync.SyncTimestampOverlay" parent="Widget.TimeSync.TimestampOverlay">
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="Widget.TimeSync.CameraLabel">
+        <item name="android:background">@color/overlay_black</item>
+        <item name="android:fontFamily">monospace</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:paddingHorizontal">8dp</item>
+        <item name="android:paddingVertical">5dp</item>
+        <item name="android:textColor">@color/time_green</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Widget.TimeSync.StatusOverlay">
+        <item name="android:background">@color/status_black</item>
+        <item name="android:fontFamily">sans</item>
+        <item name="android:gravity">center</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:textColor">@color/time_green</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+</resources>
