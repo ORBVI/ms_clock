@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.TimeSync" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Theme.TimeSync" parent="@style/TimeSyncBaseTheme" />
+
+    <style name="TimeSyncBaseTheme" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowLightStatusBar">false</item>
-        <item name="android:windowLightNavigationBar">false</item>
-        <item name="android:windowBackground">@color/black</item>
-        <item name="android:forceDarkAllowed">false</item>
+        <item name="android:windowBackground">@color/time_background</item>
     </style>
 </resources>

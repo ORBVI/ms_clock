@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="@color/time_background"
+        android:pathData="M0,0h108v108h-108z" />
+    <path
+        android:fillColor="@color/time_cyan"
+        android:pathData="M54,8C28.6,8 8,28.6 8,54s20.6,46 46,46 46,-20.6 46,-46S79.4,8 54,8z" />
+    <path
+        android:fillColor="@color/launcher_clock_face"
+        android:pathData="M54,18C34.1,18 18,34.1 18,54s16.1,36 36,36 36,-16.1 36,-36S73.9,18 54,18z" />
+    <path
+        android:fillColor="@color/time_white"
+        android:pathData="M50,30h8v29h-8zM54,54h26v8H54zM50,50h8v8h-8z" />
+</vector>

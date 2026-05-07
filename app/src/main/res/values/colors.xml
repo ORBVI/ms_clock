@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#000000</color>
-    <color name="time_green">#00FF00</color>
+    <color name="time_background">#061016</color>
+    <color name="time_primary">#F7FBFF</color>
+    <color name="time_secondary">#DDE8EF</color>
+    <color name="time_white">#F7FBFF</color>
+    <color name="time_cyan">#18D8FF</color>
+    <color name="time_progress_track">#1A2B33</color>
+    <color name="launcher_clock_face">#071A22</color>
 </resources>

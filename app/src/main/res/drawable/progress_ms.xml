@@ -4,8 +4,8 @@
     <!-- 轨道 -->
     <item android:id="@android:id/background">
         <shape>
-            <solid android:color="#1A1A1A" />
-            <corners android:radius="1.5dp" />
+            <solid android:color="@color/time_progress_track" />
+            <corners android:radius="3dp" />
         </shape>
     </item>
 
@@ -14,10 +14,10 @@
         <clip>
             <shape>
                 <gradient
-                    android:startColor="#00E5FF"
-                    android:endColor="#FFFFFF"
+                    android:startColor="@color/time_cyan"
+                    android:endColor="@color/time_white"
                     android:type="linear" />
-                <corners android:radius="1.5dp" />
+                <corners android:radius="3dp" />
             </shape>
         </clip>
     </item>

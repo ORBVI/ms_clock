@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">TimeSync</string>
+    <string name="app_name">微秒时钟</string>
+    <string name="action_fullscreen">Fullscreen</string>
+    <string name="action_night_mode">Night mode</string>
+    <string name="battery_percent">%1$d%%</string>
+    <string name="battery_unknown">--%</string>
+    <string name="date_placeholder">Thursday, 07 May 2026</string>
+    <string name="elapsed_placeholder">0:00:00:0</string>
+    <string name="timer_placeholder">00:00.000</string>
 </resources>
