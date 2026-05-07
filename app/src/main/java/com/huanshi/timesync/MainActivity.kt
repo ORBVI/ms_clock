@@ -33,9 +33,9 @@ class MainActivity : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         window.statusBarColor = Color.BLACK
         window.navigationBarColor = Color.BLACK
-        WindowInsetsControllerCompat(window, window.decorView)
-            .hide(WindowInsetsCompat.Type.statusBars())
-            .hide(WindowInsetsCompat.Type.navigationBars())
+        val insetsController = WindowInsetsControllerCompat(window, window.decorView)
+        insetsController.hide(WindowInsetsCompat.Type.statusBars())
+        insetsController.hide(WindowInsetsCompat.Type.navigationBars())
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
