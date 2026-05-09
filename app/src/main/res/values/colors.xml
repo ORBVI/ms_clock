@@ -3,8 +3,10 @@
     <color name="time_background">#061016</color>
     <color name="time_primary">#F7FBFF</color>
     <color name="time_secondary">#DDE8EF</color>
+    <color name="time_muted">#8DA1AD</color>
     <color name="time_white">#F7FBFF</color>
     <color name="time_cyan">#18D8FF</color>
+    <color name="time_control_surface">#13232B</color>
     <color name="time_progress_track">#1A2B33</color>
     <color name="launcher_clock_face">#071A22</color>
 </resources>

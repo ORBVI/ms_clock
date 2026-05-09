@@ -5,9 +5,6 @@ import android.content.IntentFilter
 import android.os.BatteryManager
 import android.os.Bundle
 import android.os.SystemClock
-import android.text.Spannable
-import android.text.SpannableStringBuilder
-import android.text.style.ForegroundColorSpan
 import android.view.Choreographer
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
@@ -23,17 +20,14 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val choreographer = Choreographer.getInstance()
-    private val timeText = SpannableStringBuilder()
+    private val timeText = StringBuilder()
     private val elapsedText = StringBuilder()
-    private val dateFormat = SimpleDateFormat("EEEE, dd MMMM yyyy", Locale.ENGLISH)
+    private val dateFormat = SimpleDateFormat("yyyy年MM月dd日 EEEE", Locale.CHINA)
 
     private var baseNanoTime: Long = 0
     private var baseEpochMillis: Long = 0
     private var isRunning = false
     private var isDimmed = false
-
-    private var timeWhite: Int = 0
-    private var timeCyan: Int = 0
 
     private val frameCallback = object : Choreographer.FrameCallback {
         override fun doFrame(frameTimeNanos: Long) {
@@ -42,13 +36,12 @@ class MainActivity : AppCompatActivity() {
             val elapsedNanos = frameTimeNanos - baseNanoTime
             val micros = (baseEpochMillis * 1000) + (elapsedNanos / 1000)
 
-            val totalSeconds = Math.floorMod(micros / 1_000_000L, 60L)
-            val totalMinutes = Math.floorMod(micros / 60_000_000L, 60L)
-            val millis = Math.floorMod(micros / 1_000L, 1_000L)
+            val hours = Math.floorMod(micros / 3_600_000_000L, 24L)
+            val minutes = Math.floorMod(micros / 60_000_000L, 60L)
+            val seconds = Math.floorMod(micros / 1_000_000L, 60L)
 
-            updateTimerText(totalMinutes, totalSeconds, millis)
+            updateTimerText(hours, minutes, seconds)
             updateElapsedText()
-            binding.progressBar.progress = millis.toInt()
 
             if (isRunning) {
                 choreographer.postFrameCallback(this)
@@ -68,8 +61,6 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        timeWhite = getColor(R.color.time_white)
-        timeCyan = getColor(R.color.time_cyan)
         binding.fullscreenButton.setOnClickListener { hideSystemBars() }
         binding.nightButton.setOnClickListener { toggleDimMode() }
     }
@@ -120,31 +111,19 @@ class MainActivity : AppCompatActivity() {
         binding.nightButton.alpha = if (isDimmed) ACTIVE_CONTROL_ALPHA else INACTIVE_CONTROL_ALPHA
     }
 
-    private fun updateTimerText(minutes: Long, seconds: Long, millis: Long) {
+    private fun updateTimerText(hours: Long, minutes: Long, seconds: Long) {
         timeText.clear()
-        timeText.clearSpans()
 
+        appendTwoDigits(hours)
+        timeText.append(':')
         appendTwoDigits(minutes)
         timeText.append(':')
         appendTwoDigits(seconds)
 
-        val millisStart = timeText.length
-        timeText.append('.')
-        appendThreeDigits(millis)
-
-        timeText.setSpan(
-            ForegroundColorSpan(timeWhite),
-            0,
-            millisStart,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE,
-        )
-        timeText.setSpan(
-            ForegroundColorSpan(timeCyan),
-            millisStart,
-            timeText.length,
-            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE,
-        )
-        binding.timerText.text = timeText
+        val nextTime = timeText.toString()
+        if (binding.timerText.text.toString() != nextTime) {
+            binding.timerText.text = nextTime
+        }
     }
 
     private fun updateElapsedText() {
@@ -162,7 +141,10 @@ class MainActivity : AppCompatActivity() {
         appendTwoDigits(elapsedText, seconds)
         elapsedText.append(':')
         elapsedText.append(tenths)
-        binding.elapsedStatus.text = elapsedText.toString()
+        val nextElapsed = elapsedText.toString()
+        if (binding.elapsedStatus.text.toString() != nextElapsed) {
+            binding.elapsedStatus.text = nextElapsed
+        }
     }
 
     private fun updateDateText() {
@@ -192,12 +174,6 @@ class MainActivity : AppCompatActivity() {
     private fun appendTwoDigits(builder: StringBuilder, value: Long) {
         builder.append(('0'.code + (value / 10L).toInt()).toChar())
         builder.append(('0'.code + Math.floorMod(value, 10L).toInt()).toChar())
-    }
-
-    private fun appendThreeDigits(value: Long) {
-        appendDigit(value / 100L)
-        appendDigit(Math.floorMod(value / 10L, 10L))
-        appendDigit(Math.floorMod(value, 10L))
     }
 
     private fun appendDigit(value: Long) {
