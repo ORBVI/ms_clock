@@ -7,5 +7,5 @@
     <string name="battery_unknown">--%</string>
     <string name="date_placeholder">2026年05月07日 星期四</string>
     <string name="elapsed_placeholder">0:00:00.000</string>
-    <string name="timer_placeholder">00:00:00.000</string>
+    <string name="timer_placeholder">00:00.000</string>
 </resources>

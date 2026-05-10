@@ -36,12 +36,11 @@ class MainActivity : AppCompatActivity() {
             val elapsedNanos = frameTimeNanos - baseNanoTime
             val micros = (baseEpochMillis * 1000) + (elapsedNanos / 1000)
 
-            val hours = Math.floorMod(micros / 3_600_000_000L, 24L)
             val minutes = Math.floorMod(micros / 60_000_000L, 60L)
             val seconds = Math.floorMod(micros / 1_000_000L, 60L)
             val millis = Math.floorMod(micros / 1_000L, 1_000L)
 
-            updateTimerText(hours, minutes, seconds, millis)
+            updateTimerText(minutes, seconds, millis)
             updateElapsedText()
 
             if (isRunning) {
@@ -112,11 +111,9 @@ class MainActivity : AppCompatActivity() {
         binding.nightButton.alpha = if (isDimmed) ACTIVE_CONTROL_ALPHA else INACTIVE_CONTROL_ALPHA
     }
 
-    private fun updateTimerText(hours: Long, minutes: Long, seconds: Long, millis: Long) {
+    private fun updateTimerText(minutes: Long, seconds: Long, millis: Long) {
         timeText.clear()
 
-        appendTwoDigits(hours)
-        timeText.append(':')
         appendTwoDigits(minutes)
         timeText.append(':')
         appendTwoDigits(seconds)
