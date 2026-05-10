@@ -39,8 +39,9 @@ class MainActivity : AppCompatActivity() {
             val hours = Math.floorMod(micros / 3_600_000_000L, 24L)
             val minutes = Math.floorMod(micros / 60_000_000L, 60L)
             val seconds = Math.floorMod(micros / 1_000_000L, 60L)
+            val millis = Math.floorMod(micros / 1_000L, 1_000L)
 
-            updateTimerText(hours, minutes, seconds)
+            updateTimerText(hours, minutes, seconds, millis)
             updateElapsedText()
 
             if (isRunning) {
@@ -111,7 +112,7 @@ class MainActivity : AppCompatActivity() {
         binding.nightButton.alpha = if (isDimmed) ACTIVE_CONTROL_ALPHA else INACTIVE_CONTROL_ALPHA
     }
 
-    private fun updateTimerText(hours: Long, minutes: Long, seconds: Long) {
+    private fun updateTimerText(hours: Long, minutes: Long, seconds: Long, millis: Long) {
         timeText.clear()
 
         appendTwoDigits(hours)
@@ -119,6 +120,8 @@ class MainActivity : AppCompatActivity() {
         appendTwoDigits(minutes)
         timeText.append(':')
         appendTwoDigits(seconds)
+        timeText.append('.')
+        appendThreeDigits(millis)
 
         val nextTime = timeText.toString()
         if (binding.timerText.text.toString() != nextTime) {
@@ -131,7 +134,7 @@ class MainActivity : AppCompatActivity() {
         val hours = elapsedMillis / MILLIS_PER_HOUR
         val minutes = Math.floorMod(elapsedMillis / MILLIS_PER_MINUTE, 60L)
         val seconds = Math.floorMod(elapsedMillis / MILLIS_PER_SECOND, 60L)
-        val tenths = Math.floorMod(elapsedMillis / 100L, 10L)
+        val millis = Math.floorMod(elapsedMillis, MILLIS_PER_SECOND)
 
         elapsedText.clear()
         elapsedText.append(hours)
@@ -139,8 +142,8 @@ class MainActivity : AppCompatActivity() {
         appendTwoDigits(elapsedText, minutes)
         elapsedText.append(':')
         appendTwoDigits(elapsedText, seconds)
-        elapsedText.append(':')
-        elapsedText.append(tenths)
+        elapsedText.append('.')
+        appendThreeDigits(elapsedText, millis)
         val nextElapsed = elapsedText.toString()
         if (binding.elapsedStatus.text.toString() != nextElapsed) {
             binding.elapsedStatus.text = nextElapsed
@@ -171,8 +174,20 @@ class MainActivity : AppCompatActivity() {
         appendDigit(Math.floorMod(value, 10L))
     }
 
+    private fun appendThreeDigits(value: Long) {
+        appendDigit(value / 100L)
+        appendDigit(Math.floorMod(value / 10L, 10L))
+        appendDigit(Math.floorMod(value, 10L))
+    }
+
     private fun appendTwoDigits(builder: StringBuilder, value: Long) {
         builder.append(('0'.code + (value / 10L).toInt()).toChar())
+        builder.append(('0'.code + Math.floorMod(value, 10L).toInt()).toChar())
+    }
+
+    private fun appendThreeDigits(builder: StringBuilder, value: Long) {
+        builder.append(('0'.code + (value / 100L).toInt()).toChar())
+        builder.append(('0'.code + Math.floorMod(value / 10L, 10L).toInt()).toChar())
         builder.append(('0'.code + Math.floorMod(value, 10L).toInt()).toChar())
     }
 
