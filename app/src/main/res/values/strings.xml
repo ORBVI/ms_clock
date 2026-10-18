@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">微秒时钟</string>
+    <string name="app_name">同步测试靶</string>
     <string name="action_fullscreen">Fullscreen</string>
     <string name="action_night_mode">Night mode</string>
     <string name="battery_percent">%1$d%%</string>
@@ -8,4 +8,14 @@
     <string name="date_placeholder">2026年05月07日 星期四</string>
     <string name="elapsed_placeholder">0:00:00.000</string>
     <string name="timer_placeholder">00:00.000</string>
+    <string name="control_pause">暂停</string>
+    <string name="control_resume">继续</string>
+    <string name="control_reset">归零</string>
+    <string name="control_light">浅色</string>
+    <string name="control_dark">深色</string>
+    <string name="control_white_digits">白字</string>
+    <string name="control_red_digits">红字</string>
+    <string name="control_target">测试靶</string>
+    <string name="control_minimal">极简</string>
+    <string name="control_fullscreen">全屏</string>
 </resources>

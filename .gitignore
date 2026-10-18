@@ -7,3 +7,6 @@
 *.apk
 *.aab
 *.hprof
+/.codegraph/
+.DS_Store
+/artifacts/
