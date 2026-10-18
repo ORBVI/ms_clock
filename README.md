@@ -44,3 +44,20 @@ adb shell am start -n com.huanshi.timesync/.MainActivity
 ```
 
 `local.properties` 配置本机 SDK 路径。首次构建需要能访问项目中配置的 Maven 仓库，缓存完整时可加 `--offline`。
+
+## GitHub CI 与发布
+
+GitHub 仓库：<https://github.com/ORBVI/ms_clock>（私有）。
+
+- `master` 推送、Pull Request 和手动触发：在 Ubuntu / JDK 17 上构建 Debug、Release，运行两种变体的 Lint 和现有单元测试任务，保留 APK 与报告 14 天。目前仓库尚无单元测试用例，测试任务会显示 `NO-SOURCE`。
+- `v*` 标签：校验标签与 `versionName`、版本说明一致；构建成功后，使用仓库签名 Secrets 签名并验证 APK，发布 GitHub Release，附 APK、SHA-256 校验文件、证书指纹。
+- 发布签名 Secrets：`ANDROID_KEYSTORE_BASE64`、`ANDROID_KEYSTORE_PASSWORD`、`ANDROID_KEY_PASSWORD`、`ANDROID_KEY_ALIAS`。缺少任何一项时发布失败，不使用临时 debug 签名替代。
+- 每次发布修改 `app/build.gradle` 的 `versionName`，递增 `versionCode`，添加 `docs/releases/vX.Y.Z.md`，待分支 CI 通过后创建并推送对应标签。
+- 签名密钥及密码不得提交 Git；本地 `.release-signing/` 已被忽略，需由维护者另行安全备份。后续 APK 更新必须沿用相同签名。
+- CI 使用官方 Google / Maven Central 仓库；本地保留原有镜像仓库以兼容已有缓存。
+
+```sh
+git tag -a v1.0.0 -m 'HS / SYNC v1.0.0'
+git push github master
+git push github v1.0.0
+```

@@ -1,0 +1,101 @@
+name: Android CI and Release
+on:
+  push:
+    branches: [master]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: android-${{ github.ref }}
+  cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/') }}
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
+      - name: Install Android SDK packages
+        run: sdkmanager 'platforms;android-34' 'build-tools;34.0.0'
+      - name: Validate release version
+        if: startsWith(github.ref, 'refs/tags/')
+        run: python3 scripts/check_release_version.py "$GITHUB_REF_NAME"
+      - name: Build and lint
+        run: ./gradlew --no-daemon assembleDebug assembleRelease lintDebug lintRelease testDebugUnitTest
+      - name: Upload build results
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-build
+          path: |
+            app/build/outputs/apk/debug/*.apk
+            app/build/outputs/apk/release/*-unsigned.apk
+            app/build/reports/
+          if-no-files-found: error
+          retention-days: 14
+  release:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: actions/download-artifact@v4
+        with:
+          name: android-build
+          path: build-artifacts
+      - name: Install signing tools
+        run: sdkmanager 'build-tools;34.0.0'
+      - name: Sign and verify APK
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          : "${ANDROID_KEYSTORE_BASE64:?Missing signing key}"
+          : "${ANDROID_KEYSTORE_PASSWORD:?Missing store password}"
+          : "${ANDROID_KEY_PASSWORD:?Missing key password}"
+          : "${ANDROID_KEY_ALIAS:?Missing key alias}"
+          umask 077
+          keyfile="$RUNNER_TEMP/release.jks"
+          trap 'rm -f "$keyfile"' EXIT
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$keyfile"
+          mkdir -p dist
+          apk="dist/ms-clock-${GITHUB_REF_NAME}.apk"
+          "$ANDROID_HOME/build-tools/34.0.0/apksigner" sign --ks "$keyfile" \
+            --ks-key-alias "$ANDROID_KEY_ALIAS" --ks-pass env:ANDROID_KEYSTORE_PASSWORD \
+            --key-pass env:ANDROID_KEY_PASSWORD --out "$apk" \
+            build-artifacts/outputs/apk/release/app-release-unsigned.apk
+          "$ANDROID_HOME/build-tools/34.0.0/apksigner" verify --verbose --print-certs "$apk" > dist/signature.txt
+          (cd dist && sha256sum *.apk > SHA256SUMS)
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          notes="docs/releases/${GITHUB_REF_NAME}.md"
+          test -f "$notes"
+          if gh release view "$GITHUB_REF_NAME" --json isDraft --jq .isDraft > "$RUNNER_TEMP/release-state"; then
+            test "$(cat "$RUNNER_TEMP/release-state")" = true
+          else
+            gh release create "$GITHUB_REF_NAME" --verify-tag --draft \
+              --title "HS / SYNC ${GITHUB_REF_NAME}" --notes-file "$notes"
+          fi
+          gh release upload "$GITHUB_REF_NAME" dist/*.apk dist/SHA256SUMS dist/signature.txt --clobber
+          gh release edit "$GITHUB_REF_NAME" --draft=false --latest

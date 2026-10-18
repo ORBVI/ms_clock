@@ -10,3 +10,6 @@
 /.codegraph/
 .DS_Store
 /artifacts/
+/.release-signing/
+*.jks
+*.keystore
